@@ -1,0 +1,207 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "sites_Function_app_mutum_name": {
+            "defaultValue": "Function-app-mutum",
+            "type": "String"
+        },
+        "serverfarms_ASP_TxtAnlsRG_979c_externalid": {
+            "defaultValue": "/subscriptions/11edda03-85c6-4aa7-8e03-5d1376995ab1/resourceGroups/TxtAnls-RG/providers/Microsoft.Web/serverfarms/ASP-TxtAnlsRG-979c",
+            "type": "String"
+        }
+    },
+    "variables": {},
+    "resources": [
+        {
+            "type": "Microsoft.Web/sites",
+            "apiVersion": "2021-01-15",
+            "name": "[parameters('sites_Function_app_mutum_name')]",
+            "location": "UK South",
+            "kind": "functionapp",
+            "properties": {
+                "enabled": true,
+                "hostNameSslStates": [
+                    {
+                        "name": "function-app-mutum.azurewebsites.net",
+                        "sslState": "Disabled",
+                        "hostType": "Standard"
+                    },
+                    {
+                        "name": "function-app-mutum.scm.azurewebsites.net",
+                        "sslState": "Disabled",
+                        "hostType": "Repository"
+                    }
+                ],
+                "serverFarmId": "[parameters('serverfarms_ASP_TxtAnlsRG_979c_externalid')]",
+                "reserved": false,
+                "isXenon": false,
+                "hyperV": false,
+                "siteConfig": {
+                    "numberOfWorkers": -1,
+                    "acrUseManagedIdentityCreds": false,
+                    "alwaysOn": false,
+                    "http20Enabled": false,
+                    "functionAppScaleLimit": 0,
+                    "minimumElasticInstanceCount": 0
+                },
+                "scmSiteAlsoStopped": false,
+                "clientAffinityEnabled": true,
+                "clientCertEnabled": false,
+                "clientCertMode": "Required",
+                "hostNamesDisabled": false,
+                "customDomainVerificationId": "3C093BD05213BB6009E38A581A8890710736D6900E1B0FA227781B4EC0FC485F",
+                "containerSize": 1536,
+                "dailyMemoryTimeQuota": 0,
+                "keyVaultReferenceIdentity": "SystemAssigned",
+                "httpsOnly": false,
+                "redundancyMode": "None",
+                "storageAccountRequired": false
+            }
+        },
+        {
+            "type": "Microsoft.Web/sites/basicPublishingCredentialsPolicies",
+            "apiVersion": "2021-01-15",
+            "name": "[concat(parameters('sites_Function_app_mutum_name'), '/ftp')]",
+            "location": "UK South",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_Function_app_mutum_name'))]"
+            ],
+            "properties": {
+                "allow": true
+            }
+        },
+        {
+            "type": "Microsoft.Web/sites/basicPublishingCredentialsPolicies",
+            "apiVersion": "2021-01-15",
+            "name": "[concat(parameters('sites_Function_app_mutum_name'), '/scm')]",
+            "location": "UK South",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_Function_app_mutum_name'))]"
+            ],
+            "properties": {
+                "allow": true
+            }
+        },
+        {
+            "type": "Microsoft.Web/sites/config",
+            "apiVersion": "2021-01-15",
+            "name": "[concat(parameters('sites_Function_app_mutum_name'), '/web')]",
+            "location": "UK South",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_Function_app_mutum_name'))]"
+            ],
+            "properties": {
+                "numberOfWorkers": -1,
+                "defaultDocuments": [
+                    "Default.htm",
+                    "Default.html",
+                    "Default.asp",
+                    "index.htm",
+                    "index.html",
+                    "iisstart.htm",
+                    "default.aspx",
+                    "index.php"
+                ],
+                "netFrameworkVersion": "v4.0",
+                "phpVersion": "5.6",
+                "requestTracingEnabled": false,
+                "remoteDebuggingEnabled": false,
+                "httpLoggingEnabled": false,
+                "acrUseManagedIdentityCreds": false,
+                "logsDirectorySizeLimit": 35,
+                "detailedErrorLoggingEnabled": false,
+                "publishingUsername": "$Function-app-mutum",
+                "azureStorageAccounts": {},
+                "scmType": "None",
+                "use32BitWorkerProcess": true,
+                "webSocketsEnabled": false,
+                "alwaysOn": false,
+                "managedPipelineMode": "Integrated",
+                "virtualApplications": [
+                    {
+                        "virtualPath": "/",
+                        "physicalPath": "site\\wwwroot",
+                        "preloadEnabled": false
+                    }
+                ],
+                "loadBalancing": "LeastRequests",
+                "experiments": {
+                    "rampUpRules": []
+                },
+                "autoHealEnabled": false,
+                "vnetRouteAllEnabled": false,
+                "vnetPrivatePortsCount": 0,
+                "cors": {
+                    "allowedOrigins": [
+                        "https://functions.azure.com",
+                        "https://functions-staging.azure.com",
+                        "https://functions-next.azure.com"
+                    ],
+                    "supportCredentials": false
+                },
+                "localMySqlEnabled": false,
+                "ipSecurityRestrictions": [
+                    {
+                        "ipAddress": "Any",
+                        "action": "Allow",
+                        "priority": 1,
+                        "name": "Allow all",
+                        "description": "Allow all access"
+                    }
+                ],
+                "scmIpSecurityRestrictions": [
+                    {
+                        "ipAddress": "Any",
+                        "action": "Allow",
+                        "priority": 1,
+                        "name": "Allow all",
+                        "description": "Allow all access"
+                    }
+                ],
+                "scmIpSecurityRestrictionsUseMain": false,
+                "http20Enabled": false,
+                "minTlsVersion": "1.2",
+                "scmMinTlsVersion": "1.0",
+                "ftpsState": "AllAllowed",
+                "preWarmedInstanceCount": 0,
+                "functionAppScaleLimit": 0,
+                "functionsRuntimeScaleMonitoringEnabled": false,
+                "minimumElasticInstanceCount": 0
+            }
+        },
+        {
+            "type": "Microsoft.Web/sites/functions",
+            "apiVersion": "2021-01-15",
+            "name": "[concat(parameters('sites_Function_app_mutum_name'), '/QueueTrigger1')]",
+            "location": "UK South",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_Function_app_mutum_name'))]"
+            ],
+            "properties": {
+                "script_root_path_href": "https://function-app-mutum.azurewebsites.net/admin/vfs/site/wwwroot/QueueTrigger1/",
+                "script_href": "https://function-app-mutum.azurewebsites.net/admin/vfs/site/wwwroot/QueueTrigger1/index.js",
+                "config_href": "https://function-app-mutum.azurewebsites.net/admin/vfs/site/wwwroot/QueueTrigger1/function.json",
+                "test_data_href": "https://function-app-mutum.azurewebsites.net/admin/vfs/data/Functions/sampledata/QueueTrigger1.dat",
+                "href": "https://function-app-mutum.azurewebsites.net/admin/functions/QueueTrigger1",
+                "config": {},
+                "test_data": "{\"body\":\"{\\\"body\\\":\\\"{\\\\\\\"body\\\\\\\":\\\\\\\"sample queue data\\\\\\\"}\\\"}\"}",
+                "language": "node",
+                "isDisabled": false
+            }
+        },
+        {
+            "type": "Microsoft.Web/sites/hostNameBindings",
+            "apiVersion": "2021-01-15",
+            "name": "[concat(parameters('sites_Function_app_mutum_name'), '/', parameters('sites_Function_app_mutum_name'), '.azurewebsites.net')]",
+            "location": "UK South",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_Function_app_mutum_name'))]"
+            ],
+            "properties": {
+                "siteName": "Function-app-mutum",
+                "hostNameType": "Verified"
+            }
+        }
+    ]
+}
